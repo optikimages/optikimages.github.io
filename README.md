@@ -1,2 +1,0 @@
-# optikimages.github.io
-THIS IS THE OFFICIAL WEBSITE FOR OPTIC IMAGES

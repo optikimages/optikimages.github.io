@@ -5,16 +5,17 @@
 
 // Duration.
 	$duration: (
-		menu:				0.5s,
+		menu:				0.35s,
 		transition:			0.2s,
-		banner:				0.875s
+		banner:				2.5s
 	);
 
 // Size.
 	$size: (
-		border-radius:		0.325rem,
-		element-height:		2.75rem,
-		element-margin:		2rem
+		border-radius:		4px,
+		element-height:		2.75em,
+		element-margin:		2em,
+		inner:				65em
 	);
 
 // Font.
@@ -23,43 +24,24 @@
 		family-fixed:		('Courier New', monospace),
 		weight:				300,
 		weight-bold:		600,
-		weight-extrabold:	900
+		letter-spacing:		0.025em,
+		letter-spacing-alt:	0.25em
 	);
 
 // Palette.
 	$palette: (
-		bg:					#ffffff,
-		bg-alt:				#f2f5fa,
-		bg-shadow:			rgba(desaturate(darken(#f2f5fa, 25), 15), 0.325),
-		fg:					#7a7d86,
-		fg-bold:			#7a7d86,
-		fg-light:			rgba(#7a7d86,0.75),
-		border:				#dde1eb,
-		border-bg:			rgba(#dde1eb,0.175),
-		border-bg-alt:		rgba(#dde1eb,0.275),
-		accent1:			#a2cedc,
-		accent2:			#93b5dc,
-		accent3:			#a3a9e7,
-		accent4:			#aa8fff,
-		accent5:			#65c1d8,
-		highlight:			#a3a9e7,
-
-		invert: (
-			bg:				darken(desaturate(mix(mix(#a2cedc, #aa8fff, 50%), #65c1d8, 50%), 15), 8),
-			bg-alt:			#917aa9,
-			bg-shadow:		rgba(desaturate(darken(#7a7d86, 25), 15), 0.325),
-			fg:				#ffffff,
-			fg-bold:		#ffffff,
-			fg-light:		rgba(255,255,255,0.75),
-			border:			rgba(255,255,255,0.35),
-			border-bg:		rgba(255,255,255,0.075),
-			border-bg-alt:	rgba(255,255,255,0.175),
-			accent1:		lighten(#a2cedc, 10),
-			accent2:		lighten(#93b5dc, 10),
-			accent3:		lighten(#a3a9e7, 10),
-			accent4:		lighten(#aa8fff, 10),
-			accent5:		lighten(#65c1d8, 10),
-			highlight:		#ffffff
-		),
-
+		bg:					#242943,
+		bg-alt:				#2a2f4a,
+		fg:					#ffffff,
+		fg-bold:			#ffffff,
+		fg-light:			rgba(244,244,255,0.2),
+		border:				rgba(212,212,255,0.1),
+		border-bg:			rgba(212,212,255,0.035),
+		highlight:			#9bf1ff,
+		accent1:			#6fc3df,
+		accent2:			#8d82c4,
+		accent3:			#ec8d81,
+		accent4:			#e7b788,
+		accent5:			#8ea9e8,
+		accent6:			#87c5a4
 	);

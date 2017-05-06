@@ -1,5 +1,5 @@
 ///
-/// Vortex by Pixelarity
+/// Forty by Pixelarity
 /// pixelarity.com | hello@pixelarity.com
 /// License: pixelarity.com/license
 ///
@@ -7,15 +7,36 @@
 /* Footer */
 
 	#footer {
-		color: _palette(fg-light);
-		margin: -2rem 0 6rem 0;
-		text-align: center;
+		.copyright {
+			font-size: 0.8em;
+			list-style: none;
+			padding-left: 0;
 
-		@include breakpoint(xlarge) {
-			margin: 0 0 3.5rem 0;
+			li {
+				border-left: solid 1px _palette(border);
+				color: _palette(fg-light);
+				display: inline-block;
+				line-height: 1;
+				margin-left: 1em;
+				padding-left: 1em;
+
+				&:first-child {
+					border-left: 0;
+					margin-left: 0;
+					padding-left: 0;
+				}
+			}
 		}
 
 		@include breakpoint(xsmall) {
-			margin: 2rem 0;
+			.copyright {
+				li {
+					display: block;
+					border-left: 0;
+					margin-left: 0;
+					padding-left: 0;
+					line-height: inherit;
+				}
+			}
 		}
 	}
