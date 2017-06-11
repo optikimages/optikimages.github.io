@@ -1,5 +1,5 @@
 ///
-/// Forty by Pixelarity
+/// Multiverse by Pixelarity
 /// pixelarity.com | hello@pixelarity.com
 /// License: pixelarity.com/license
 ///
@@ -26,9 +26,18 @@
 	body {
 		background: _palette(bg);
 
-		// Prevents animation/transition "flicker" on page load.
+		// Prevents animation/transition "flicker" on page load and triggers various
+		// on-load animations when removed. Automatically added/removed by js/main.js.
+			&.loading {
+				*, *:before, *:after {
+					@include vendor('animation', 'none !important');
+					@include vendor('transition', 'none !important');
+				}
+			}
+
+		// Prevents animation/transition "flicker" on resize.
 		// Automatically added/removed by js/main.js.
-			&.is-loading {
+			&.resizing {
 				*, *:before, *:after {
 					@include vendor('animation', 'none !important');
 					@include vendor('transition', 'none !important');

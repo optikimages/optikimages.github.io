@@ -1,5 +1,5 @@
 ///
-/// Forty by Pixelarity
+/// Multiverse by Pixelarity
 /// pixelarity.com | hello@pixelarity.com
 /// License: pixelarity.com/license
 ///
@@ -10,47 +10,29 @@
 		margin: 0 0 _size(element-margin) 0;
 
 		.field {
-			margin: 0 0 (_size(element-margin) * 1) 0;
+			margin: 0 0 (_size(element-margin) * 0.65) 0;
 
 			&.half {
-				width: 50%;
 				float: left;
-				padding: 0 0 0 (_size(element-margin) * 1 * 0.5);
+				padding: 0 0 0 (_size(element-margin) * 0.325);
+				width: 50%;
 
 				&.first {
-					padding: 0 (_size(element-margin) * 1 * 0.5) 0 0;
+					padding: 0 (_size(element-margin) * 0.325) 0 0;
 				}
 			}
 		}
 
 		> .actions {
-			margin: (_size(element-margin) * 1.25) 0 0 0 !important;
+			margin: (_size(element-margin) * 0.75) 0 0 0 !important;
 		}
 
 		@include breakpoint(small) {
 			.field {
-				margin: 0 0 (_size(element-margin) * 0.75) 0;
-
 				&.half {
-					padding: 0 0 0 (_size(element-margin) * 0.75 * 0.5);
-
-					&.first {
-						padding: 0 (_size(element-margin) * 0.75 * 0.5) 0 0;
-					}
-				}
-			}
-
-			> .actions {
-				margin: (_size(element-margin) * 1) 0 0 0 !important;
-			}
-		}
-
-		@include breakpoint(xsmall) {
-			.field {
-				&.half {
-					width: 100%;
 					float: none;
 					padding: 0;
+					width: 100%;
 
 					&.first {
 						padding: 0;
@@ -63,11 +45,9 @@
 	label {
 		color: _palette(fg-bold);
 		display: block;
-		font-size: 0.8em;
+		font-size: 0.9em;
 		font-weight: _font(weight-bold);
-		letter-spacing: _font(letter-spacing-alt);
 		margin: 0 0 (_size(element-margin) * 0.5) 0;
-		text-transform: uppercase;
 	}
 
 	input[type="text"],
@@ -80,9 +60,9 @@
 	textarea {
 		@include vendor('appearance', 'none');
 		background: _palette(border-bg);
-		border: none;
+		border: 0;
 		border-radius: 0;
-		color: inherit;
+		color: _palette(fg);
 		display: block;
 		outline: 0;
 		padding: 0 1em;
@@ -94,8 +74,7 @@
 		}
 
 		&:focus {
-			border-color: _palette(highlight);
-			box-shadow: 0 0 0 2px _palette(highlight);
+			box-shadow: inset 0 0 0 2px _palette(accent1);
 		}
 	}
 
@@ -152,8 +131,9 @@
 			color: _palette(fg);
 			cursor: pointer;
 			display: inline-block;
+			font-size: 1em;
 			font-weight: _font(weight);
-			padding-left: (_size(element-height) * 0.6) + 1em;
+			padding-left: (_size(element-height) * 0.6) + 0.75em;
 			padding-right: 0.75em;
 			position: relative;
 
@@ -163,7 +143,6 @@
 				display: inline-block;
 				height: (_size(element-height) * 0.6);
 				left: 0;
-				letter-spacing: 0;
 				line-height: (_size(element-height) * 0.575);
 				position: absolute;
 				text-align: center;
@@ -174,16 +153,16 @@
 
 		&:checked + label {
 			&:before {
-				background: _palette(fg-bold);
-				border-color: _palette(highlight);
+				background: _palette(accent1);
+				border-color: _palette(accent1);
+				color: _palette(fg-bold);
 				content: '\f00c';
-				color: _palette(bg);
 			}
 		}
 
 		&:focus + label {
 			&:before {
-				box-shadow: 0 0 0 2px _palette(highlight);
+				box-shadow: 0 0 0 2px _palette(accent1);
 			}
 		}
 	}
@@ -204,26 +183,26 @@
 	}
 
 	::-webkit-input-placeholder {
-		color: _palette(fg-light) !important;
+		color: _palette(fg-medium) !important;
 		opacity: 1.0;
 	}
 
 	:-moz-placeholder {
-		color: _palette(fg-light) !important;
+		color: _palette(fg-medium) !important;
 		opacity: 1.0;
 	}
 
 	::-moz-placeholder {
-		color: _palette(fg-light) !important;
+		color: _palette(fg-medium) !important;
 		opacity: 1.0;
 	}
 
 	:-ms-input-placeholder {
-		color: _palette(fg-light) !important;
+		color: _palette(fg-medium) !important;
 		opacity: 1.0;
 	}
 
 	.formerize-placeholder {
-		color: _palette(fg-light) !important;
+		color: _palette(fg-medium) !important;
 		opacity: 1.0;
 	}

@@ -1,43 +1,47 @@
 /*
-	Forty by Pixelarity
+	Multiverse by Pixelarity
 	pixelarity.com | hello@pixelarity.com
 	License: pixelarity.com/license
 */
 
 /* Button */
 
+	input[type="submit"],
+	input[type="reset"],
+	input[type="button"],
+	button,
 	.button {
-		border: solid 2px !important;
+		border: solid 2px #36383c;
 	}
 
-		.button.next {
-			padding-right: 1.75em;
+		input[type="submit"].special,
+		input[type="reset"].special,
+		input[type="button"].special,
+		button.special,
+		.button.special {
+			border: 0;
 		}
 
-			.button.next:before, .button.next:after {
-				display: none;
-			}
+/* Panel */
 
-/* Tiles */
-
-	.tiles article {
-		width: 50%;
-		-ms-behavior: url("assets/js/ie/backgroundsize.min.htc");
-		background-size: cover;
+	.panel {
+		background: #242629;
+		display: none;
 	}
 
-/* Banner */
-
-	#banner {
-		-ms-behavior: url("assets/js/ie/backgroundsize.min.htc");
-	}
-
-		#banner:after {
-			display: none;
+		.panel.active {
+			display: block;
 		}
 
-/* Menu */
+		.panel > .closer:before {
+			content: '\00d7';
+			font-size: 42px;
+		}
 
-	#menu {
-		background: #242943;
+/* Main */
+
+	#main .thumb > h2 {
+		text-align: center;
+		width: 100%;
+		left: 0;
 	}

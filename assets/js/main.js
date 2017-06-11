@@ -1,5 +1,5 @@
 /*
-	Forty by Pixelarity
+	Multiverse by Pixelarity
 	pixelarity.com | hello@pixelarity.com
 	License: pixelarity.com/license
 */
@@ -11,341 +11,288 @@
 		large: '(max-width: 1280px)',
 		medium: '(max-width: 980px)',
 		small: '(max-width: 736px)',
-		xsmall: '(max-width: 480px)',
-		xxsmall: '(max-width: 360px)'
+		xsmall: '(max-width: 480px)'
 	});
-
-	/**
-	 * Applies parallax scrolling to an element's background image.
-	 * @return {jQuery} jQuery object.
-	 */
-	$.fn._parallax = (skel.vars.browser == 'ie' || skel.vars.browser == 'edge' || skel.vars.mobile) ? function() { return $(this) } : function(intensity) {
-
-		var	$window = $(window),
-			$this = $(this);
-
-		if (this.length == 0 || intensity === 0)
-			return $this;
-
-		if (this.length > 1) {
-
-			for (var i=0; i < this.length; i++)
-				$(this[i])._parallax(intensity);
-
-			return $this;
-
-		}
-
-		if (!intensity)
-			intensity = 0.25;
-
-		$this.each(function() {
-
-			var $t = $(this),
-				on, off;
-
-			on = function() {
-
-				$t.css('background-position', 'center 100%, center 100%, center 0px');
-
-				$window
-					.on('scroll._parallax', function() {
-
-						var pos = parseInt($window.scrollTop()) - parseInt($t.position().top);
-
-						$t.css('background-position', 'center ' + (pos * (-1 * intensity)) + 'px');
-
-					});
-
-			};
-
-			off = function() {
-
-				$t
-					.css('background-position', '');
-
-				$window
-					.off('scroll._parallax');
-
-			};
-
-			skel.on('change', function() {
-
-				if (skel.breakpoint('medium').active)
-					(off)();
-				else
-					(on)();
-
-			});
-
-		});
-
-		$window
-			.off('load._parallax resize._parallax')
-			.on('load._parallax resize._parallax', function() {
-				$window.trigger('scroll');
-			});
-
-		return $(this);
-
-	};
 
 	$(function() {
 
 		var	$window = $(window),
 			$body = $('body'),
-			$wrapper = $('#wrapper'),
-			$header = $('#header'),
-			$banner = $('#banner');
+			$wrapper = $('#wrapper');
 
-		// Disable animations/transitions until the page has loaded.
-			$body.addClass('is-loading');
+		// Hack: Enable IE workarounds.
+			if (skel.vars.IEVersion < 12)
+				$body.addClass('ie');
 
-			$window.on('load pageshow', function() {
-				window.setTimeout(function() {
-					$body.removeClass('is-loading');
-				}, 100);
-			});
+		// Touch?
+			if (skel.vars.mobile)
+				$body.addClass('touch');
 
-		// Clear transitioning state on unload/hide.
-			$window.on('unload pagehide', function() {
-				window.setTimeout(function() {
-					$('.is-transitioning').removeClass('is-transitioning');
-				}, 250);
-			});
+		// Transitions supported?
+			if (skel.canUse('transition')) {
 
-		// Fix: Enable IE-only tweaks.
-			if (skel.vars.browser == 'ie' || skel.vars.browser == 'edge')
-				$body.addClass('is-ie');
+				// Add (and later, on load, remove) "loading" class.
+					$body.addClass('loading');
+
+					$window.on('load', function() {
+						window.setTimeout(function() {
+							$body.removeClass('loading');
+						}, 100);
+					});
+
+				// Prevent transitions/animations on resize.
+					var resizeTimeout;
+
+					$window.on('resize', function() {
+
+						window.clearTimeout(resizeTimeout);
+
+						$body.addClass('resizing');
+
+						resizeTimeout = window.setTimeout(function() {
+							$body.removeClass('resizing');
+						}, 100);
+
+					});
+
+			}
+
+		// Scroll back to top.
+			$window.scrollTop(0);
 
 		// Fix: Placeholder polyfill.
 			$('form').placeholder();
 
-		// Prioritize "important" elements on medium.
-			skel.on('+medium -medium', function() {
-				$.prioritize(
-					'.important\\28 medium\\29',
-					skel.breakpoint('medium').active
-				);
-			});
+		// Panels.
+			var $panels = $('.panel');
 
-		// Scrolly.
-			$('.scrolly').scrolly({
-				offset: function() {
-					return $header.height() - 2;
-				}
-			});
-
-		// Tiles.
-			var $tiles = $('.tiles > article');
-
-			$tiles.each(function() {
+			$panels.each(function() {
 
 				var $this = $(this),
-					$image = $this.find('.image'), $img = $image.find('img'),
-					$link = $this.find('.link'),
-					x;
+					$toggles = $('[href="#' + $this.attr('id') + '"]'),
+					$closer = $('<div class="closer" />').appendTo($this);
 
-				// Image.
+				// Closer.
+					$closer
+						.on('click', function(event) {
+							$this.trigger('---hide');
+						});
 
-					// Set image.
-						$this.css('background-image', 'url(' + $img.attr('src') + ')');
+				// Events.
+					$this
+						.on('click', function(event) {
+							event.stopPropagation();
+						})
+						.on('---toggle', function() {
 
-					// Set position.
-						if (x = $img.data('position'))
-							$image.css('background-position', x);
+							if ($this.hasClass('active'))
+								$this.triggerHandler('---hide');
+							else
+								$this.triggerHandler('---show');
 
-					// Hide original.
-						$image.hide();
+						})
+						.on('---show', function() {
 
-				// Link.
-					if ($link.length > 0) {
+							// Hide other content.
+								if ($body.hasClass('content-active'))
+									$panels.trigger('---hide');
 
-						$x = $link.clone()
-							.text('')
-							.addClass('primary')
-							.appendTo($this);
+							// Activate content, toggles.
+								$this.addClass('active');
+								$toggles.addClass('active');
 
-						$link = $link.add($x);
+							// Activate body.
+								$body.addClass('content-active');
 
-						$link.on('click', function(event) {
+						})
+						.on('---hide', function() {
 
-							var href = $link.attr('href');
+							// Deactivate content, toggles.
+								$this.removeClass('active');
+								$toggles.removeClass('active');
 
-							// Prevent default.
-								event.stopPropagation();
-								event.preventDefault();
-
-							// Start transitioning.
-								$this.addClass('is-transitioning');
-								$wrapper.addClass('is-transitioning');
-
-							// Redirect.
-								window.setTimeout(function() {
-
-									if ($link.attr('target') == '_blank')
-										window.open(href);
-									else
-										location.href = href;
-
-								}, 500);
+							// Deactivate body.
+								$body.removeClass('content-active');
 
 						});
 
-					}
+				// Toggles.
+					$toggles
+						.removeAttr('href')
+						.css('cursor', 'pointer')
+						.on('click', function(event) {
+
+							event.preventDefault();
+							event.stopPropagation();
+
+							$this.trigger('---toggle');
+
+						});
 
 			});
 
-		// Header.
-			if (skel.vars.IEVersion < 9)
-				$header.removeClass('alt');
+			// Global events.
+				$body
+					.on('click', function(event) {
 
-			if ($banner.length > 0
-			&&	$header.hasClass('alt')) {
+						if ($body.hasClass('content-active')) {
 
-				$window.on('resize', function() {
-					$window.trigger('scroll');
-				});
+							event.preventDefault();
+							event.stopPropagation();
 
-				$window.on('load', function() {
+							$panels.trigger('---hide');
 
-					$banner.scrollex({
-						bottom:		$header.height() + 10,
-						terminate:	function() { $header.removeClass('alt'); },
-						enter:		function() { $header.addClass('alt'); },
-						leave:		function() { $header.removeClass('alt'); $header.addClass('reveal'); }
+						}
+
 					});
 
-					window.setTimeout(function() {
-						$window.triggerHandler('scroll');
-					}, 100);
+				$window
+					.on('keyup', function(event) {
+
+						if (event.keyCode == 27
+						&&	$body.hasClass('content-active')) {
+
+							event.preventDefault();
+							event.stopPropagation();
+
+							$panels.trigger('---hide');
+
+						}
+
+					});
+
+		// Header.
+			var $header = $('#header');
+
+			// Links.
+				$header.find('a').each(function() {
+
+					var $this = $(this),
+						href = $this.attr('href');
+
+					// Internal link? Skip.
+						if (!href
+						||	href.charAt(0) == '#')
+							return;
+
+					// Redirect on click.
+						$this
+							.removeAttr('href')
+							.css('cursor', 'pointer')
+							.on('click', function(event) {
+
+								event.preventDefault();
+								event.stopPropagation();
+
+								window.location.href = href;
+
+							});
 
 				});
 
-			}
+		// Footer.
+			var $footer = $('#footer');
 
-		// Banner.
-			$banner.each(function() {
+			// Copyright.
+			// This basically just moves the copyright line to the end of the *last* sibling of its current parent
+			// when the "medium" breakpoint activates, and moves it back when it deactivates.
+				$footer.find('.copyright').each(function() {
 
-				var $this = $(this),
-					$image = $this.find('.image'), $img = $image.find('img');
+					var $this = $(this),
+						$parent = $this.parent(),
+						$lastParent = $parent.parent().children().last();
 
-				// Parallax.
-					$this._parallax(0.275);
-
-				// Image.
-					if ($image.length > 0) {
-
-						// Set image.
-							$this.css('background-image', 'url(' + $img.attr('src') + ')');
-
-						// Hide original.
-							$image.hide();
-
-					}
-
-			});
-
-		// Menu.
-			var $menu = $('#menu'),
-				$menuInner;
-
-			$menu.wrapInner('<div class="inner"></div>');
-			$menuInner = $menu.children('.inner');
-			$menu._locked = false;
-
-			$menu._lock = function() {
-
-				if ($menu._locked)
-					return false;
-
-				$menu._locked = true;
-
-				window.setTimeout(function() {
-					$menu._locked = false;
-				}, 350);
-
-				return true;
-
-			};
-
-			$menu._show = function() {
-
-				if ($menu._lock())
-					$body.addClass('is-menu-visible');
-
-			};
-
-			$menu._hide = function() {
-
-				if ($menu._lock())
-					$body.removeClass('is-menu-visible');
-
-			};
-
-			$menu._toggle = function() {
-
-				if ($menu._lock())
-					$body.toggleClass('is-menu-visible');
-
-			};
-
-			$menuInner
-				.on('click', function(event) {
-					event.stopPropagation();
-				})
-				.on('click', 'a', function(event) {
-
-					var href = $(this).attr('href');
-
-					event.preventDefault();
-					event.stopPropagation();
-
-					// Hide.
-						$menu._hide();
-
-					// Redirect.
-						window.setTimeout(function() {
-							window.location.href = href;
-						}, 250);
+					skel
+						.on('+medium', function() {
+							$this.appendTo($lastParent);
+						})
+						.on('-medium', function() {
+							$this.appendTo($parent);
+						});
 
 				});
 
-			$menu
-				.appendTo($body)
-				.on('click', function(event) {
+		// Main.
+			var $main = $('#main');
 
-					event.stopPropagation();
-					event.preventDefault();
+			// Thumbs.
+				$main.children('.thumb').each(function() {
 
-					$body.removeClass('is-menu-visible');
+					var	$this = $(this),
+						$image = $this.find('.image'), $image_img = $image.children('img'),
+						x;
 
-				})
-				.append('<a class="close" href="#menu">Close</a>');
+					// No image? Bail.
+						if ($image.length == 0)
+							return;
 
-			$body
-				.on('click', 'a[href="#menu"]', function(event) {
+					// Image.
+					// This sets the background of the "image" <span> to the image pointed to by its child
+					// <img> (which is then hidden). Gives us way more flexibility.
 
-					event.stopPropagation();
-					event.preventDefault();
+						// Set background.
+							$image.css('background-image', 'url(' + $image_img.attr('src') + ')');
 
-					// Toggle.
-						$menu._toggle();
+						// Set background position.
+							if (x = $image_img.data('position'))
+								$image.css('background-position', x);
 
-				})
-				.on('click', function(event) {
+						// Hide original img.
+							$image_img.hide();
 
-					// Hide.
-						$menu._hide();
-
-				})
-				.on('keydown', function(event) {
-
-					// Hide on escape.
-						if (event.keyCode == 27)
-							$menu._hide();
+					// Hack: IE<11 doesn't support pointer-events, which means clicks to our image never
+					// land as they're blocked by the thumbnail's caption overlay gradient. This just forces
+					// the click through to the image.
+						if (skel.vars.IEVersion < 11)
+							$this
+								.css('cursor', 'pointer')
+								.on('click', function() {
+									$image.trigger('click');
+								});
 
 				});
+
+			// Poptrox.
+				$main.poptrox({
+					baseZIndex: 20000,
+					caption: function($a) {
+
+						var s = '';
+
+						$a.nextAll().each(function() {
+							s += this.outerHTML;
+						});
+
+						return s;
+
+					},
+					fadeSpeed: 300,
+					onPopupClose: function() { $body.removeClass('modal-active'); },
+					onPopupOpen: function() { $body.addClass('modal-active'); },
+					overlayOpacity: 0,
+					popupCloserText: '',
+					popupHeight: 150,
+					popupLoaderText: '',
+					popupSpeed: 300,
+					popupWidth: 150,
+					selector: '.thumb > a.image',
+					usePopupCaption: true,
+					usePopupCloser: true,
+					usePopupDefaultStyling: false,
+					usePopupForceClose: true,
+					usePopupLoader: true,
+					usePopupNav: true,
+					windowMargin: 50
+				});
+
+				// Hack: Set margins to 0 when 'xsmall' activates.
+					skel
+						.on('-xsmall', function() {
+							$main[0]._poptrox.windowMargin = 50;
+						})
+						.on('+xsmall', function() {
+							$main[0]._poptrox.windowMargin = 0;
+						});
 
 	});
 
